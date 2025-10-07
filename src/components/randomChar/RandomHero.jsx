@@ -1,6 +1,8 @@
 import { Component } from "react";
 
 import DotaService from "../../services/DotaService";
+import Spinner from "../spinner/Spinner";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 
 import "./RandomHero.scss";
 
@@ -14,50 +16,41 @@ class RandomHero extends Component {
 
   state = {
     hero: {},
+    loading: true,
+    error: false,
   };
 
   dotaService = new DotaService();
 
   onHeroLoaded = (hero) => {
-    this.setState({ hero });
+    this.setState({ hero, loading: false });
+  };
+
+  onError = () => {
+    this.setState({ loading: false, error: true });
   };
 
   updateHero = () => {
     const id = Math.floor(Math.random() * (126 - 1) + 1);
 
-    this.dotaService.getRandomHeroStats(id).then(this.onHeroLoaded);
+    this.dotaService
+      .getRandomHeroStats(id)
+      .then(this.onHeroLoaded)
+      .catch(this.onError);
   };
 
   render() {
-    const {
-      hero: { name, description, thumbnail, homepage, wiki },
-    } = this.state;
+    const { hero, loading, error } = this.state;
+
+    const errorMessage = error ? <ErrorMessage /> : null;
+    const spinner = loading ? <Spinner /> : null;
+    const content = !(spinner || errorMessage) ? <View hero={hero} /> : null;
 
     return (
       <div className="randomhero">
-        <div className="randomhero__block">
-          <img
-            src={thumbnail}
-            alt="Random character"
-            className="randomhero__img"
-          />
-          <div className="randomhero__info">
-            <p className="randomhero__name">{name}</p>
-            <p className="randomhero__descr">
-              {!description
-                ? "Hero description is currently unavailable"
-                : description}
-            </p>
-            <div className="randomhero__btns">
-              <a href={homepage} className="button button__main">
-                <div className="inner">homepage</div>
-              </a>
-              <a href={wiki} className="button button__secondary">
-                <div className="inner">Wiki</div>
-              </a>
-            </div>
-          </div>
-        </div>
+        {errorMessage}
+        {spinner}
+        {content}
         <div className="randomhero__static">
           <p className="randomhero__title">
             Random hero for today!
@@ -74,5 +67,31 @@ class RandomHero extends Component {
     );
   }
 }
+
+const View = ({ hero }) => {
+  const { name, description, thumbnail, homepage, wiki } = hero;
+
+  return (
+    <div className="randomhero__block">
+      <img src={thumbnail} alt="Random character" className="randomhero__img" />
+      <div className="randomhero__info">
+        <p className="randomhero__name">{name}</p>
+        <p className="randomhero__descr">
+          {!description
+            ? "Hero description is currently unavailable"
+            : description}
+        </p>
+        <div className="randomhero__btns">
+          <a href={homepage} className="button button__main">
+            <div className="inner">homepage</div>
+          </a>
+          <a href={wiki} className="button button__secondary">
+            <div className="inner">wiki</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default RandomHero;

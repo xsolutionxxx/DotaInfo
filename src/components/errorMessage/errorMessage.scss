@@ -1,0 +1,21 @@
+@use "../../style/variables.scss" as *;
+
+.error {
+  padding: 0 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &__img {
+    display: block;
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+  }
+  &__message {
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 42px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+}

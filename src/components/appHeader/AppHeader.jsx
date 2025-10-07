@@ -4,8 +4,13 @@ const AppHeader = () => {
   return (
     <header className="app__header">
       <h1 className="app__title">
-        <a href="#">
-          <span>DOTA 2</span> information portal
+        <a href="/">
+          <img
+            src="/dotaLogo.png"
+            alt="Dota logotype"
+            className="app__title__logo"
+          />
+          <span>dota 2</span> information portal
         </a>
       </h1>
       <nav className="app__menu">
