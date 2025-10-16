@@ -9,16 +9,15 @@ import "./RandomHero.scss";
 import ogre from "../../resources/img/ogre.png";
 
 class RandomHero extends Component {
-  constructor(props) {
-    super(props);
-    this.updateHero();
-  }
-
   state = {
     hero: {},
     loading: true,
     error: false,
   };
+
+  componentDidMount() {
+    this.updateRandomHero();
+  }
 
   dotaService = new DotaService();
 
@@ -26,15 +25,23 @@ class RandomHero extends Component {
     this.setState({ hero, loading: false });
   };
 
+  onHeroLoading = () => {
+    this.setState({
+      loading: true,
+    });
+  };
+
   onError = () => {
     this.setState({ loading: false, error: true });
   };
 
-  updateHero = () => {
+  updateRandomHero = () => {
     const id = Math.floor(Math.random() * (126 - 1) + 1);
 
+    this.onHeroLoading();
+
     this.dotaService
-      .getRandomHeroStats(id)
+      .getHeroById(id)
       .then(this.onHeroLoaded)
       .catch(this.onError);
   };
@@ -58,7 +65,10 @@ class RandomHero extends Component {
             Do you want to get to know him better?
           </p>
           <p className="randomhero__title">Or choose another one</p>
-          <button className="button button__main">
+          <button
+            className="button button__main"
+            onClick={this.updateRandomHero}
+          >
             <div className="inner">try it</div>
           </button>
           <img src={ogre} alt="mjolnir" className="randomhero__decoration" />
@@ -69,24 +79,24 @@ class RandomHero extends Component {
 }
 
 const View = ({ hero }) => {
-  const { name, description, thumbnail, homepage, wiki } = hero;
+  const { name, description, thumbnail, homepage, fandom } = hero;
 
   return (
     <div className="randomhero__block">
       <img src={thumbnail} alt="Random character" className="randomhero__img" />
       <div className="randomhero__info">
         <p className="randomhero__name">{name}</p>
-        <p className="randomhero__descr">
+        <div className="randomhero__descr">
           {!description
             ? "Hero description is currently unavailable"
             : description}
-        </p>
+        </div>
         <div className="randomhero__btns">
           <a href={homepage} className="button button__main">
             <div className="inner">homepage</div>
           </a>
-          <a href={wiki} className="button button__secondary">
-            <div className="inner">wiki</div>
+          <a href={fandom} className="button button__secondary">
+            <div className="inner">fandom</div>
           </a>
         </div>
       </div>
