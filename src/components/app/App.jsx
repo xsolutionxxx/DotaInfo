@@ -2,7 +2,7 @@ import { Component } from "react";
 
 import AppHeader from "../appHeader/AppHeader";
 import RandomHero from "../randomHero/RandomHero";
-import HeroesList from "../heroesList/HeroesList";
+import HeroList from "../heroList/HeroList";
 import HeroInfo from "../heroInfo/HeroInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
@@ -29,7 +29,7 @@ class App extends Component {
           </ErrorBoundary>
           <div className="hero__content">
             <ErrorBoundary>
-              <HeroesList onHeroSelected={this.onHeroSelected} />
+              <HeroList onHeroSelected={this.onHeroSelected} />
             </ErrorBoundary>
             <ErrorBoundary>
               <HeroInfo heroId={this.state.selectedHero} />

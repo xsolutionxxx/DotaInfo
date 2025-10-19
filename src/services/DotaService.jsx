@@ -1,5 +1,11 @@
 class DotaService {
   _apiBase = "https://api.opendota.com/api/";
+  _baseOffset = 0;
+  _baseLimit = 9;
+
+  get baseLimit() {
+    return this._baseLimit;
+  }
 
   getResource = async (url) => {
     let res = await fetch(url);
@@ -18,9 +24,9 @@ class DotaService {
     return this._transformHero(hero);
   };
 
-  getHeroLimit = async (limit) => {
+  getHeroLimit = async (start = this._baseOffset, limit = this._baseLimit) => {
     const heroes = await this.getResource(`${this._apiBase}heroStats`);
-    return this._transformHeroLimit(heroes, limit);
+    return this._transformHeroLimit(heroes, start, limit);
   };
 
   convertToAttribute = (attribute) => {
@@ -79,8 +85,8 @@ class DotaService {
     };
   };
 
-  _transformHeroLimit = (heroes, limit) => {
-    return heroes.slice(0, limit).map((hero) => ({
+  _transformHeroLimit = (heroes, start, limit) => {
+    return heroes.slice(start, start + limit).map((hero) => ({
       id: hero.id,
       name: hero.localized_name,
       thumbnail: `https://cdn.cloudflare.steamstatic.com${hero.img}`,
