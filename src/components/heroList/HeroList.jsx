@@ -1,4 +1,5 @@
 import { Component } from "react";
+import PropTypes from "prop-types";
 
 import DotaService from "../../services/DotaService";
 import Spinner from "../spinner/Spinner";
@@ -114,5 +115,9 @@ class HeroList extends Component {
     );
   }
 }
+
+HeroList.propTypes = {
+  onCharSelected: PropTypes.func.isRequired,
+};
 
 export default HeroList;

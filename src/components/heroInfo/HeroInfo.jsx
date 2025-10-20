@@ -1,4 +1,5 @@
 import { Component } from "react";
+import PropTypes from "prop-types";
 
 import DotaService from "../../services/DotaService";
 import Spinner from "../spinner/Spinner";
@@ -107,6 +108,10 @@ const View = ({ hero }) => {
       </ul>
     </>
   );
+};
+
+HeroInfo.propTypes = {
+  heroId: PropTypes.number.isRequired,
 };
 
 export default HeroInfo;
