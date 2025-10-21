@@ -16,6 +16,7 @@ class HeroList extends Component {
     start: 0,
     limit: 9,
     heroEnded: false,
+    activeHeroId: null,
   };
 
   dotaService = new DotaService();
@@ -66,12 +67,38 @@ class HeroList extends Component {
     this.setState({ loading: false, error: true });
   };
 
+  /* setHeroRef = (hero) => {
+    this.heroRef = hero;
+  }; */
+
+  heroRefs = {};
+
+  onHeroClick = (id) => {
+    this.setState({ activeHeroId: id }, () => {
+      const el = this.heroRefs[id];
+      if (el) el.focus();
+    });
+  };
+
   renderElements(arr) {
     const elements = arr?.map(({ id, name, thumbnail }) => (
       <li
         key={id}
-        className="hero__item"
-        onClick={() => this.props.onHeroSelected(id)}
+        ref={(el) => (this.heroRefs[id] = el)}
+        tabIndex={0}
+        className={`hero__item ${
+          this.state.activeHeroId === id ? "hero__item_selected" : ""
+        }`}
+        onClick={() => {
+          this.props.onHeroSelected(id);
+          this.onHeroClick(id);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === " " || e.key === "Enter") {
+            this.props.onHeroSelected(id);
+            this.onHeroClick(id);
+          }
+        }}
       >
         <img src={thumbnail} alt={name} />
         <div className="hero__name">{name}</div>
