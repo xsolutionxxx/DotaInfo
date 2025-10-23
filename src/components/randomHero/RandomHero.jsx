@@ -4,7 +4,7 @@ import DotaService from "../../services/DotaService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
-import "./RandomHero.scss";
+import "./randomHero.scss";
 
 import ogre from "../../resources/img/ogre.png";
 
