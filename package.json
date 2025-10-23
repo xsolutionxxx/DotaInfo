@@ -11,6 +11,9 @@
     "heroku-postbuild": "npm run build",
     "start": "serve -s dist -l $PORT"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "prop-types": "^15.8.1",
     "react": "^19.1.1",
