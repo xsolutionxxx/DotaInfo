@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useState } from "react";
 
 import AppHeader from "../appHeader/AppHeader";
 import RandomHero from "../randomHero/RandomHero";
@@ -8,38 +8,32 @@ import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 import enigma from "../../resources/img/enigma.png";
 
-class App extends Component {
-  state = {
-    selectedHero: null,
+const App = () => {
+  const [selectedHero, setHero] = useState(null);
+
+  const onHeroSelected = (id) => {
+    setHero(id);
   };
 
-  onHeroSelected = (id) => {
-    this.setState({
-      selectedHero: id,
-    });
-  };
-
-  render() {
-    return (
-      <div className="app">
-        <AppHeader />
-        <main>
+  return (
+    <div className="app">
+      <AppHeader />
+      <main>
+        <ErrorBoundary>
+          <RandomHero />
+        </ErrorBoundary>
+        <div className="hero__content">
           <ErrorBoundary>
-            <RandomHero />
+            <HeroList onHeroSelected={onHeroSelected} />
           </ErrorBoundary>
-          <div className="hero__content">
-            <ErrorBoundary>
-              <HeroList onHeroSelected={this.onHeroSelected} />
-            </ErrorBoundary>
-            <ErrorBoundary>
-              <HeroInfo heroId={this.state.selectedHero} />
-            </ErrorBoundary>
-          </div>
-          <img className="bg-decoration" src={enigma} alt="vision" />
-        </main>
-      </div>
-    );
-  }
-}
+          <ErrorBoundary>
+            <HeroInfo heroId={selectedHero} />
+          </ErrorBoundary>
+        </div>
+        <img className="bg-decoration" src={enigma} alt="vision" />
+      </main>
+    </div>
+  );
+};
 
 export default App;

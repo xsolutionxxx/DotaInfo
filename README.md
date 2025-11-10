@@ -14,3 +14,24 @@ The React Compiler is currently not compatible with SWC. See [this issue](https:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## 🔀 Project Versions
+
+This project exists in two parallel implementations:
+
+### ✅ Class Components version (main branch)
+
+Original version using React class components, lifecycle methods and internal state.
+
+### ✅ Functional Components version (functional-version branch)
+
+Rewritten using modern React:
+
+- useState
+- useEffect
+- useMemo / useCallback
+- useRef
+- custom hooks
+- functional components
+
+👉 Switch between branches above (GitHub UI) to explore both versions.

@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import DotaService from "../../services/DotaService";
@@ -8,73 +8,61 @@ import Skeleton from "../skeleton/Skeleton";
 
 import "./heroInfo.scss";
 
-class HeroInfo extends Component {
-  state = {
-    hero: null,
-    loading: false,
-    error: false,
-  };
+const HeroInfo = ({ heroId }) => {
+  const [hero, setHero] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setErorr] = useState(false);
 
-  dotaService = new DotaService();
+  const dotaService = new DotaService();
 
-  componentDidMount() {
-    this.updateHero();
-  }
-  componentDidUpdate(prevProps) {
-    if (this.props.heroId !== prevProps.heroId) {
-      this.updateHero();
-    }
-  }
+  useEffect(() => {
+    updateHero();
+  }, []);
 
-  updateHero = () => {
-    const { heroId } = this.props;
+  useEffect(() => {
+    updateHero();
+  }, [heroId]);
 
+  const updateHero = () => {
     if (!heroId) {
       return;
     }
 
-    this.onHeroLoading();
+    onHeroLoading();
 
-    this.dotaService
-      .getHeroById(heroId)
-      .then(this.onHeroLoaded)
-      .catch(this.onError);
+    dotaService.getHeroById(heroId).then(onHeroLoaded).catch(onError);
   };
 
-  onHeroLoaded = (hero) => {
-    this.setState({ hero, loading: false });
+  const onHeroLoaded = (hero) => {
+    setHero(hero);
+    setLoading(true);
   };
 
-  onHeroLoading = () => {
-    this.setState({
-      loading: true,
-    });
+  const onHeroLoading = () => {
+    setLoading(true);
   };
 
-  onError = () => {
-    this.setState({ loading: false, error: true });
+  const onError = () => {
+    setLoading(false);
+    setErorr(true);
   };
 
-  render() {
-    const { hero, loading, error } = this.state;
+  const skeleton = hero || loading || error ? null : <Skeleton />;
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(spinner || errorMessage || !hero) ? (
+    <View hero={hero} />
+  ) : null;
 
-    const skeleton = hero || loading || error ? null : <Skeleton />;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(spinner || errorMessage || !hero) ? (
-      <View hero={hero} />
-    ) : null;
-
-    return (
-      <div className="hero__info">
-        {skeleton}
-        {errorMessage}
-        {spinner}
-        {content}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="hero__info">
+      {skeleton}
+      {errorMessage}
+      {spinner}
+      {content}
+    </div>
+  );
+};
 
 const View = ({ hero }) => {
   const { name, description, thumbnail, homepage, fandom, baseStats } = hero;
