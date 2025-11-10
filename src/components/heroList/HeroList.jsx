@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 
-import DotaService from "../../services/DotaService";
+import useDotaService from "../../services/DotaService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
@@ -9,29 +9,22 @@ import "./heroList.scss";
 
 const HeroList = ({ onHeroSelected }) => {
   const [heroes, setHeroes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [newHeroesLoading, setNewHeroesLoading] = useState(false);
   const [start, setStart] = useState(0);
   const [limit] = useState(9);
   const [heroEnded, setHeroEnded] = useState(false);
   const [activeHeroId, setActiveHeroId] = useState(null);
 
-  const dotaService = new DotaService();
+  const { _baseLimit, loading, error, getHeroLimit } = useDotaService();
 
   useEffect(() => {
-    onRequest(start, limit);
+    onRequest(start, limit, true);
   }, []);
 
-  const onRequest = (start, limit) => {
-    onHeroListLoading();
-    dotaService
-      .getHeroLimit(start, limit)
-      .then(onHeroListLoaded)
-      .catch(onError);
+  const onRequest = (start, limit, initial) => {
+    initial ? setNewHeroesLoading(false) : setNewHeroesLoading(true);
+    getHeroLimit(start, limit).then(onHeroListLoaded);
   };
-
-  const onHeroListLoading = () => setNewHeroesLoading(true);
 
   const onHeroListLoaded = (newHeroList) => {
     const merged = [...heroes, ...newHeroList];
@@ -39,8 +32,7 @@ const HeroList = ({ onHeroSelected }) => {
       (hero, index, self) => index === self.findIndex((h) => h.id === hero.id)
     );
 
-    const started =
-      start + limit === limit ? dotaService.baseLimit : start + limit;
+    const started = start + limit === limit ? _baseLimit : start + limit;
 
     let ended = false;
 
@@ -49,21 +41,10 @@ const HeroList = ({ onHeroSelected }) => {
     }
 
     setHeroes(unique);
-    setLoading(false);
     setNewHeroesLoading(false);
     setStart(started);
     setHeroEnded(ended);
   };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-    setNewHeroesLoading(false);
-  };
-
-  /* setHeroRef = (hero) => {
-    this.heroRef = hero;
-  }; */
 
   const heroRefs = useRef({});
 
@@ -107,14 +88,13 @@ const HeroList = ({ onHeroSelected }) => {
   const heroList = renderElements(heroes);
 
   const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error) ? heroList : null;
+  const spinner = loading && !newHeroesLoading ? <Spinner /> : null;
 
   return (
     <div className="hero__list">
       {errorMessage}
       {spinner}
-      {content}
+      {heroList}
       <button
         className="button button__main button__long"
         style={{ display: heroEnded ? "none" : "block" }}

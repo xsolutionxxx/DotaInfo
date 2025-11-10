@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import DotaService from "../../services/DotaService";
+import useDotaService from "../../services/DotaService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
@@ -10,35 +10,19 @@ import ogre from "../../resources/img/ogre.png";
 
 const RandomHero = () => {
   const [hero, setHero] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const { loading, error, getHeroById, clearError } = useDotaService();
 
   useEffect(() => {
     updateRandomHero();
   }, []);
 
-  const dotaService = new DotaService();
-
-  const onHeroLoaded = (hero) => {
-    setHero(hero);
-    setLoading(false);
-  };
-
-  const onHeroLoading = () => {
-    setLoading(true);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-  };
+  const onHeroLoaded = (hero) => setHero(hero);
 
   const updateRandomHero = () => {
+    clearError();
     const id = Math.floor(Math.random() * (126 - 1) + 1);
 
-    onHeroLoading();
-
-    dotaService.getHeroById(id).then(onHeroLoaded).catch(onError);
+    getHeroById(id).then(onHeroLoaded);
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;

@@ -1,35 +1,25 @@
-class DotaService {
-  _apiBase = "https://api.opendota.com/api/";
-  _baseOffset = 0;
-  _baseLimit = 9;
+import { useHttp } from "../hooks/http.hook";
 
-  get baseLimit() {
-    return this._baseLimit;
-  }
+const useDotaService = () => {
+  const _apiBase = "https://api.opendota.com/api/";
+  const _baseOffset = 0;
+  const _baseLimit = 9;
 
-  getResource = async (url) => {
-    let res = await fetch(url);
+  const { loading, request, error, clearError } = useHttp();
 
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-    }
-
-    return await res.json();
-  };
-
-  getHeroById = async (id) => {
-    const hero = await this.getResource(`${this._apiBase}heroStats`).then(
-      (heroes) => heroes.find((hero) => hero.id === id)
+  const getHeroById = async (id) => {
+    const hero = await request(`${_apiBase}heroStats`).then((heroes) =>
+      heroes.find((hero) => hero.id === id)
     );
-    return this._transformHero(hero);
+    return _transformHero(hero);
   };
 
-  getHeroLimit = async (start = this._baseOffset, limit = this._baseLimit) => {
-    const heroes = await this.getResource(`${this._apiBase}heroStats`);
-    return this._transformHeroLimit(heroes, start, limit);
+  const getHeroLimit = async (start = _baseOffset, limit = _baseLimit) => {
+    const heroes = await request(`${_apiBase}heroStats`);
+    return _transformHeroLimit(heroes, start, limit);
   };
 
-  convertToAttribute = (attribute) => {
+  const convertToAttribute = (attribute) => {
     switch (attribute) {
       case "str":
         return "Strength";
@@ -45,7 +35,7 @@ class DotaService {
     }
   };
 
-  _transformHero = (hero) => {
+  const _transformHero = (hero) => {
     return {
       name: hero.localized_name,
       description: (
@@ -55,8 +45,7 @@ class DotaService {
           </p>
           <hr />
           <p>
-            <b>Primary attribute:</b>{" "}
-            {this.convertToAttribute(hero.primary_attr)}
+            <b>Primary attribute:</b> {convertToAttribute(hero.primary_attr)}
           </p>
           <hr />
           <p>
@@ -85,13 +74,15 @@ class DotaService {
     };
   };
 
-  _transformHeroLimit = (heroes, start, limit) => {
+  const _transformHeroLimit = (heroes, start, limit) => {
     return heroes.slice(start, start + limit).map((hero) => ({
       id: hero.id,
       name: hero.localized_name,
       thumbnail: `https://cdn.cloudflare.steamstatic.com${hero.img}`,
     }));
   };
-}
 
-export default DotaService;
+  return { _baseLimit, loading, error, getHeroById, getHeroLimit, clearError };
+};
+
+export default useDotaService;

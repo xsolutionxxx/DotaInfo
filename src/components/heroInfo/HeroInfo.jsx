@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import DotaService from "../../services/DotaService";
+import useDotaService from "../../services/DotaService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Skeleton from "../skeleton/Skeleton";
@@ -10,14 +10,8 @@ import "./heroInfo.scss";
 
 const HeroInfo = ({ heroId }) => {
   const [hero, setHero] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setErorr] = useState(false);
 
-  const dotaService = new DotaService();
-
-  useEffect(() => {
-    updateHero();
-  }, []);
+  const { loading, error, getHeroById, clearError } = useDotaService();
 
   useEffect(() => {
     updateHero();
@@ -28,31 +22,19 @@ const HeroInfo = ({ heroId }) => {
       return;
     }
 
-    onHeroLoading();
-
-    dotaService.getHeroById(heroId).then(onHeroLoaded).catch(onError);
+    clearError();
+    getHeroById(heroId).then(onHeroLoaded);
   };
 
   const onHeroLoaded = (hero) => {
     setHero(hero);
-    setLoading(true);
   };
 
-  const onHeroLoading = () => {
-    setLoading(true);
-  };
-
-  const onError = () => {
-    setLoading(false);
-    setErorr(true);
-  };
-
-  const skeleton = hero || loading || error ? null : <Skeleton />;
+  const skeleton = !hero && !error ? <Skeleton /> : null;
   const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(spinner || errorMessage || !hero) ? (
-    <View hero={hero} />
-  ) : null;
+  const spinner = loading && hero ? <Spinner /> : null;
+  const content =
+    !error && (!loading || !hero) && hero ? <View hero={hero} /> : null;
 
   return (
     <div className="hero__info">
