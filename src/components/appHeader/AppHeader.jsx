@@ -20,7 +20,7 @@ const AppHeader = () => {
           </li>
           /
           <li>
-            <a href="#">Comics</a>
+            <a href="#">Teams</a>
           </li>
         </ul>
       </nav>

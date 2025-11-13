@@ -19,6 +19,17 @@ const useDotaService = () => {
     return _transformHeroLimit(heroes, start, limit);
   };
 
+  const getTeamsByRating = async (
+    rating,
+    start = _baseOffset,
+    limit = _baseLimit
+  ) => {
+    const teams = await request(`${_apiBase}teams`).then((teams) =>
+      teams.filter((team) => team.rating > rating)
+    );
+    return _transformTeams(teams, start, limit);
+  };
+
   const convertToAttribute = (attribute) => {
     switch (attribute) {
       case "str":
@@ -82,7 +93,25 @@ const useDotaService = () => {
     }));
   };
 
-  return { _baseLimit, loading, error, getHeroById, getHeroLimit, clearError };
+  const _transformTeams = (teams, start, limit) => {
+    return teams.slice(start, start + limit).map((team) => ({
+      id: team.team_id,
+      name: team.name,
+      logo_url: team.logo_url,
+      tag: team.tag,
+      rating: team.rating,
+    }));
+  };
+
+  return {
+    _baseLimit,
+    loading,
+    error,
+    getHeroById,
+    getHeroLimit,
+    getTeamsByRating,
+    clearError,
+  };
 };
 
 export default useDotaService;

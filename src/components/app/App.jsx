@@ -1,25 +1,28 @@
-import { useState } from "react";
+/* import { useState } from "react"; */
 
 import AppHeader from "../appHeader/AppHeader";
 import RandomHero from "../randomHero/RandomHero";
 import HeroList from "../heroList/HeroList";
 import HeroInfo from "../heroInfo/HeroInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import TeamsList from "../teamsList/TeamsList";
+import SingleTeam from "../singleTeam/SingleTeam";
 
-import enigma from "../../resources/img/enigma.png";
+/* import enigma from "../../resources/img/enigma.png"; */
 
 const App = () => {
-  const [selectedHero, setHero] = useState(null);
+  /* const [selectedHero, setHero] = useState(null);
 
   const onHeroSelected = (id) => {
     setHero(id);
-  };
+  }; */
 
   return (
     <div className="app">
       <AppHeader />
       <main>
-        <ErrorBoundary>
+        <TeamsList />
+        {/* <ErrorBoundary>
           <RandomHero />
         </ErrorBoundary>
         <div className="hero__content">
@@ -30,7 +33,7 @@ const App = () => {
             <HeroInfo heroId={selectedHero} />
           </ErrorBoundary>
         </div>
-        <img className="bg-decoration" src={enigma} alt="vision" />
+        <img className="bg-decoration" src={enigma} alt="vision" /> */}
       </main>
     </div>
   );
