@@ -1,26 +1,44 @@
+import { Link, NavLink } from "react-router-dom";
+
 import "./appHeader.scss";
 
 const AppHeader = () => {
   return (
     <header className="app__header">
       <h1 className="app__title">
-        <a href="/">
+        <Link to="/">
           <img
             src="/dotaLogo.png"
             alt="Dota logotype"
             className="app__title__logo"
           />
           <span>dota 2</span> information portal
-        </a>
+        </Link>
       </h1>
       <nav className="app__menu">
         <ul>
           <li>
-            <a href="#">Heroes</a>
+            <NavLink
+              end
+              style={({ isActive }) => ({
+                color: isActive ? "#9f0013" : "inherit",
+              })}
+              to="/"
+            >
+              Heroes
+            </NavLink>
           </li>
           /
           <li>
-            <a href="#">Teams</a>
+            <NavLink
+              end
+              style={({ isActive }) => ({
+                color: isActive ? "#9f0013" : "inherit",
+              })}
+              to="/teams"
+            >
+              Teams
+            </NavLink>
           </li>
         </ul>
       </nav>

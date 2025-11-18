@@ -1,0 +1,22 @@
+.message-404 {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  font-size: 24px;
+  text-align: center;
+  margin-top: 50px;
+  &__text {
+    &__title {
+      font-size: 48px;
+      font-weight: bold;
+    }
+    &__subtitle {
+      font-size: 42px;
+    }
+  }
+  &__link {
+    font-size: 32px;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+}

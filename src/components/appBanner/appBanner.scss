@@ -1,20 +1,35 @@
-@import '../../style/variables.scss';
+@use "../../style/variables.scss" as *;
 
 .app {
-    &__banner {
-        width: 100%;
-        background-color: $dark;
-        height: 100px;
-        padding: 0 25px 0 45px;
-        display: grid;
-        grid-template-columns: 152px auto 133px;
-        &-text {
-            font-weight: bold;
-            font-size: 24px;
-            line-height: 32px;
-            color: #FFFFFF;
-            padding-left: 83px;
-            padding-top: 18px;
-        }
+  &__banner {
+    position: relative;
+    width: 100%;
+    background-color: $dark;
+    height: 100px;
+    padding: 0 25px 0 45px;
+    display: grid;
+    grid-template-columns: 152px auto 133px;
+    &__first {
+      position: absolute;
+      top: -10px;
+      left: 45px;
+      height: 130%;
     }
+    &__second {
+      position: absolute;
+      right: 0;
+      top: -10px;
+      height: calc(100% + 10px);
+      overflow: hidden;
+    }
+    &-text {
+      width: 800px;
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 32px;
+      color: #ffffff;
+      padding-left: 150px;
+      padding-top: 18px;
+    }
+  }
 }

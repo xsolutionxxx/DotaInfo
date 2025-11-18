@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import useDotaService from "../../services/DotaService";
 import Spinner from "../spinner/Spinner";
@@ -45,15 +46,15 @@ const TeamsList = () => {
   };
 
   const renderTeams = (arr) => {
-    const elements = arr?.map(({ name, tag, logo_url, rating }) => (
-      <li className="comics__item">
-        <a href="#">
+    const elements = arr?.map(({ id, name, tag, logo_url, rating }) => (
+      <li key={id} className="comics__item">
+        <Link to={`/teams/${id}`}>
           <img src={logo_url} alt={name} className="comics__item-img" />
           <div className="comics__item-name">{name}</div>
           <div className="comics__item-rating">
             Rating {tag}: {rating}
           </div>
-        </a>
+        </Link>
       </li>
     ));
     return <ul className="comics__grid">{elements}</ul>;
