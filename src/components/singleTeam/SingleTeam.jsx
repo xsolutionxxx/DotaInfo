@@ -1,26 +1,67 @@
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+
+import useDotaService from "../../services/DotaService";
+import Spinner from "../spinner/Spinner";
+import ErrorMessage from "../errorMessage/ErrorMessage";
+
 import "./singleTeam.scss";
-import xMen from "../../resources/img/x-men.png";
 
 const SingleTeam = () => {
+  const { teamId } = useParams();
+
+  const [team, setTeam] = useState(null);
+
+  const { getTeamById, loading, error, clearError } = useDotaService();
+
+  useEffect(() => {
+    updateTeam();
+  }, [teamId]);
+
+  const updateTeam = () => {
+    clearError();
+    getTeamById(teamId).then(onTeamLoaded);
+  };
+
+  const onTeamLoaded = (team) => {
+    setTeam(team);
+  };
+
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error || !team) ? <View team={team} /> : null;
+
   return (
-    <div className="single-comic">
-      <img src={xMen} alt="x-men" className="single-comic__img" />
-      <div className="single-comic__info">
-        <h2 className="single-comic__name">X-Men: Days of Future Past</h2>
-        <p className="single-comic__descr">
-          Re-live the legendary first journey into the dystopian future of 2013
-          - where Sentinels stalk the Earth, and the X-Men are humanity's only
-          hope...until they die! Also featuring the first appearance of Alpha
-          Flight, the return of the Wendigo, the history of the X-Men from
-          Cyclops himself...and a demon for Christmas!?
+    <>
+      {errorMessage}
+      {spinner}
+      {content}
+    </>
+  );
+};
+
+const View = ({ team }) => {
+  const { name, tag, logo_url, wins, losses, rating, last_match_time } = team;
+  const lastMatchDate = new Date(last_match_time * 1000).toLocaleString(
+    "uk-UA",
+    { dateStyle: "long", timeStyle: "short" }
+  );
+
+  return (
+    <div className="single-team">
+      <img src={logo_url} alt={tag} className="single-team__img" />
+      <div className="single-team__info">
+        <h2 className="single-team__name">{name}</h2>
+        <p className="single-team__descr">Tag: {tag}</p>
+        <p className="single-team__descr">Rating: {rating}</p>
+        <p className="single-team__descr">
+          Wins: {wins} / Losses: {losses}
         </p>
-        <p className="single-comic__descr">144 pages</p>
-        <p className="single-comic__descr">Language: en-us</p>
-        <div className="single-comic__price">9.99$</div>
+        <p className="single-team__descr">Last match: {lastMatchDate}</p>
       </div>
-      <a href="#" className="single-comic__back">
+      <Link to="/teams" className="single-team__back">
         Back to all
-      </a>
+      </Link>
     </div>
   );
 };

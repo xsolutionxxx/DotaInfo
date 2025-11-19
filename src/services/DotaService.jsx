@@ -30,6 +30,11 @@ const useDotaService = () => {
     return _transformTeams(teams, start, limit);
   };
 
+  const getTeamById = async (id) => {
+    const team = await request(`${_apiBase}teams/${id}`);
+    return team;
+  };
+
   const convertToAttribute = (attribute) => {
     switch (attribute) {
       case "str":
@@ -110,6 +115,7 @@ const useDotaService = () => {
     getHeroById,
     getHeroLimit,
     getTeamsByRating,
+    getTeamById,
     clearError,
   };
 };

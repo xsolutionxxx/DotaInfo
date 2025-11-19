@@ -47,17 +47,17 @@ const TeamsList = () => {
 
   const renderTeams = (arr) => {
     const elements = arr?.map(({ id, name, tag, logo_url, rating }) => (
-      <li key={id} className="comics__item">
+      <li key={id} className="teams__item">
         <Link to={`/teams/${id}`}>
-          <img src={logo_url} alt={name} className="comics__item-img" />
-          <div className="comics__item-name">{name}</div>
-          <div className="comics__item-rating">
+          <img src={logo_url} alt={name} className="teams__item-img" />
+          <div className="teams__item-name">{name}</div>
+          <div className="teams__item-rating">
             Rating {tag}: {rating}
           </div>
         </Link>
       </li>
     ));
-    return <ul className="comics__grid">{elements}</ul>;
+    return <ul className="teams__grid">{elements}</ul>;
   };
 
   const teamsList = renderTeams(teams);
@@ -66,7 +66,7 @@ const TeamsList = () => {
   const spinner = loading && !newTeamsLoading ? <Spinner /> : null;
 
   return (
-    <div className="comics__list">
+    <div className="teams__list">
       {errorMessage}
       {spinner}
       {teamsList}
