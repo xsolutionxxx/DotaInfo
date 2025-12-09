@@ -9,8 +9,34 @@ const useDotaService = () => {
 
   const getHeroById = async (id) => {
     const hero = await request(`${_apiBase}heroStats`).then((heroes) =>
-      heroes.find((hero) => hero.id === id)
+      heroes.find((hero) => hero.id === +id)
     );
+
+    if (!hero) {
+      throw new Error("Hero not found");
+    }
+
+    return _transformHero(hero);
+  };
+
+  const getRandomHero = async () => {
+    const res = await request(`${_apiBase}heroStats`);
+
+    const randomIndex = Math.floor(Math.random() * res.length);
+    return _transformHero(res[randomIndex]);
+  };
+
+  const getHeroByName = async (name) => {
+    const hero = await request(`${_apiBase}heroStats`).then((heroes) =>
+      heroes.find(
+        (hero) => hero.localized_name.toLowerCase() === name.toLowerCase()
+      )
+    );
+
+    if (!hero) {
+      return null;
+    }
+
     return _transformHero(hero);
   };
 
@@ -53,6 +79,7 @@ const useDotaService = () => {
 
   const _transformHero = (hero) => {
     return {
+      id: hero.id,
       name: hero.localized_name,
       description: (
         <>
@@ -71,7 +98,6 @@ const useDotaService = () => {
         </>
       ),
       thumbnail: `https://cdn.cloudflare.steamstatic.com${hero.img}`,
-      homepage: null,
       fandom: `https://dota2.fandom.com/wiki/${hero.localized_name.replaceAll(
         " ",
         "_"
@@ -113,6 +139,8 @@ const useDotaService = () => {
     loading,
     error,
     getHeroById,
+    getRandomHero,
+    getHeroByName,
     getHeroLimit,
     getTeamsByRating,
     getTeamById,

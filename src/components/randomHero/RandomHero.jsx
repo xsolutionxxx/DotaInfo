@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import useDotaService from "../../services/DotaService";
 import Spinner from "../spinner/Spinner";
@@ -10,7 +11,7 @@ import ogre from "../../resources/img/ogre.png";
 
 const RandomHero = () => {
   const [hero, setHero] = useState({});
-  const { loading, error, getHeroById, clearError } = useDotaService();
+  const { getRandomHero, loading, error, clearError } = useDotaService();
 
   useEffect(() => {
     updateRandomHero();
@@ -20,9 +21,8 @@ const RandomHero = () => {
 
   const updateRandomHero = () => {
     clearError();
-    const id = Math.floor(Math.random() * (126 - 1) + 1);
 
-    getHeroById(id).then(onHeroLoaded);
+    getRandomHero().then(onHeroLoaded);
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;
@@ -54,7 +54,7 @@ const RandomHero = () => {
 };
 
 const View = ({ hero }) => {
-  const { name, description, thumbnail, homepage, fandom } = hero;
+  const { id, name, description, thumbnail, fandom } = hero;
 
   return (
     <div className="randomhero__block">
@@ -67,12 +67,17 @@ const View = ({ hero }) => {
             : description}
         </div>
         <div className="randomhero__btns">
-          <a href={homepage} className="button button__main">
+          <Link to={`/heroes/${id}`} className="button button__main">
             <div className="inner">homepage</div>
-          </a>
-          <a href={fandom} className="button button__secondary">
+          </Link>
+          <Link
+            to={fandom}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="button button__secondary"
+          >
             <div className="inner">fandom</div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

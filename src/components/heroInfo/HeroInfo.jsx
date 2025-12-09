@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import useDotaService from "../../services/DotaService";
@@ -47,35 +48,42 @@ const HeroInfo = ({ heroId }) => {
 };
 
 const View = ({ hero }) => {
-  const { name, description, thumbnail, homepage, fandom, baseStats } = hero;
+  const { id, name, description, thumbnail, fandom, baseStats } = hero;
 
   return (
     <>
-      <div className="hero__basics">
-        <img src={thumbnail} alt={name} />
-        <div>
-          <div className="hero__info-name">{name}</div>
-          <div className="hero__btns">
-            <a href={homepage} className="button button__main">
-              <div className="inner">homepage</div>
-            </a>
-            <a href={fandom} className="button button__secondary">
-              <div className="inner">Fandom</div>
-            </a>
+      <div>
+        <div className="hero__basics">
+          <img src={thumbnail} alt={name} />
+          <div>
+            <div className="hero__info-name">{name}</div>
+            <div className="hero__btns">
+              <Link to={`/heroes/${id}`} className="button button__main">
+                <div className="inner">homepage</div>
+              </Link>
+              <Link
+                to={fandom}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="button button__secondary"
+              >
+                <div className="inner">Fandom</div>
+              </Link>
+            </div>
           </div>
         </div>
+        <div className="hero__descr">{description}</div>
+        <div className="hero__stats">base stats:</div>
+        <ul className="hero__stats-list">
+          {baseStats.map((item, i) => {
+            return (
+              <li key={i} className="hero__stats-item">
+                <span>{item[0]}:</span> {item[1]}
+              </li>
+            );
+          })}
+        </ul>
       </div>
-      <div className="hero__descr">{description}</div>
-      <div className="hero__stats">base stats:</div>
-      <ul className="hero__stats-list">
-        {baseStats.map((item, i) => {
-          return (
-            <li key={i} className="hero__stats-item">
-              <span>{item[0]}:</span> {item[1]}
-            </li>
-          );
-        })}
-      </ul>
     </>
   );
 };

@@ -1,0 +1,40 @@
+@use "../../style/variables.scss" as *;
+
+.form {
+  margin-bottom: 30px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: #ffffff;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+  &__wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  &__text {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 100%;
+    &__error {
+      color: $main-color;
+    }
+    &__correct {
+      color: #03710e;
+    }
+  }
+  &__input {
+    padding: 10px;
+    width: 250px;
+    height: 38px;
+    border: none;
+    font-size: 14px;
+    line-height: 100%;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+    &::placeholder {
+      color: $grey;
+    }
+  }
+}

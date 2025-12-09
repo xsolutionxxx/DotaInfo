@@ -14,13 +14,13 @@ const TeamsList = () => {
   const [start, setStart] = useState(0);
   const [limit] = useState(8);
   const [teamsEnded, setTeamsEnded] = useState(false);
+  const rating = 1350;
 
   useEffect(() => {
     onTeamsByRating(start, limit, true);
   }, []);
 
   const onTeamsByRating = (start, limit, initial) => {
-    const rating = 1350;
     initial ? setNewTeamsLoading(false) : setNewTeamsLoading(true);
     getTeamsByRating(rating, start, limit).then(onTeamsListLoaded);
   };

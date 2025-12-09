@@ -3,6 +3,7 @@ import { useState } from "react";
 import RandomHero from "../randomHero/RandomHero";
 import HeroList from "../heroList/HeroList";
 import HeroInfo from "../heroInfo/HeroInfo";
+import HeroSearchForm from "../heroSearchForm/HeroSearchForm";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 import enigma from "../../resources/img/enigma.png";
@@ -23,9 +24,15 @@ const MainPage = () => {
         <ErrorBoundary>
           <HeroList onHeroSelected={onHeroSelected} />
         </ErrorBoundary>
-        <ErrorBoundary>
-          <HeroInfo heroId={selectedHero} />
-        </ErrorBoundary>
+
+        <div>
+          <ErrorBoundary>
+            <HeroSearchForm />
+          </ErrorBoundary>
+          <ErrorBoundary>
+            <HeroInfo heroId={selectedHero} />
+          </ErrorBoundary>
+        </div>
       </div>
       <img className="bg-decoration" src={enigma} alt="vision" />
     </>

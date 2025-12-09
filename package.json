@@ -15,11 +15,13 @@
     "node": "20.x"
   },
   "dependencies": {
+    "formik": "^2.4.9",
     "prop-types": "^15.8.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.6",
-    "serve": "^14.2.5"
+    "serve": "^14.2.5",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
