@@ -2,15 +2,14 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import AppBanner from "../appBanner/AppBanner";
-import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
+import setContent from "../../utils/SetContent";
 
 import useDotaService from "../../services/DotaService";
 
 const SinglePage = ({ Component, dataType }) => {
   const { id } = useParams();
   const [data, setData] = useState(null);
-  const { getHeroById, getTeamById, loading, error, clearError } =
+  const { getHeroById, getTeamById, process, setProcess, clearError } =
     useDotaService();
 
   useEffect(() => {
@@ -22,10 +21,14 @@ const SinglePage = ({ Component, dataType }) => {
 
     switch (dataType) {
       case "hero":
-        getHeroById(id).then(onDataLoaded);
+        getHeroById(id)
+          .then(onDataLoaded)
+          .then(() => setProcess("confirmed"));
         break;
       case "team":
-        getTeamById(id).then(onDataLoaded);
+        getTeamById(id)
+          .then(onDataLoaded)
+          .then(() => setProcess("confirmed"));
         break;
     }
   };
@@ -34,18 +37,10 @@ const SinglePage = ({ Component, dataType }) => {
     setData(data);
   };
 
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error || !data) ? (
-    <Component data={data} />
-  ) : null;
-
   return (
     <>
       <AppBanner />
-      {errorMessage}
-      {spinner}
-      {content}
+      {setContent(process, Component, data)}
     </>
   );
 };

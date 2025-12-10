@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import useDotaService from "../../services/DotaService";
-import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
+import SetContent from "../../utils/SetContent";
 
 import "./randomHero.scss";
 
@@ -11,7 +10,7 @@ import ogre from "../../resources/img/ogre.png";
 
 const RandomHero = () => {
   const [hero, setHero] = useState({});
-  const { getRandomHero, loading, error, clearError } = useDotaService();
+  const { getRandomHero, clearError, process, setProcess } = useDotaService();
 
   useEffect(() => {
     updateRandomHero();
@@ -22,18 +21,14 @@ const RandomHero = () => {
   const updateRandomHero = () => {
     clearError();
 
-    getRandomHero().then(onHeroLoaded);
+    getRandomHero()
+      .then(onHeroLoaded)
+      .then(() => setProcess("confirmed"));
   };
-
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(spinner || errorMessage) ? <View hero={hero} /> : null;
 
   return (
     <div className="randomhero">
-      {errorMessage}
-      {spinner}
-      {content}
+      {SetContent(process, View, hero)}
       <div className="randomhero__static">
         <p className="randomhero__title">
           Random hero for today!
@@ -47,14 +42,14 @@ const RandomHero = () => {
         >
           <div className="inner">try it</div>
         </button>
-        <img src={ogre} alt="mjolnir" className="randomhero__decoration" />
+        <img src={ogre} alt="ogre" className="randomhero__decoration" />
       </div>
     </div>
   );
 };
 
-const View = ({ hero }) => {
-  const { id, name, description, thumbnail, fandom } = hero;
+const View = ({ data }) => {
+  const { id, name, description, thumbnail, fandom } = data;
 
   return (
     <div className="randomhero__block">

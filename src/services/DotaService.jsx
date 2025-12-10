@@ -5,7 +5,7 @@ const useDotaService = () => {
   const _baseOffset = 0;
   const _baseLimit = 9;
 
-  const { loading, request, error, clearError } = useHttp();
+  const { request, process, setProcess, clearError } = useHttp();
 
   const getHeroById = async (id) => {
     const hero = await request(`${_apiBase}heroStats`).then((heroes) =>
@@ -136,15 +136,15 @@ const useDotaService = () => {
 
   return {
     _baseLimit,
-    loading,
-    error,
-    getHeroById,
+    process,
+    setProcess,
+    clearError,
     getRandomHero,
+    getHeroById,
     getHeroByName,
     getHeroLimit,
     getTeamsByRating,
     getTeamById,
-    clearError,
   };
 };
 

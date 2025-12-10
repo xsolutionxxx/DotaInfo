@@ -3,16 +3,14 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import useDotaService from "../../services/DotaService";
-import Spinner from "../spinner/Spinner";
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import Skeleton from "../skeleton/Skeleton";
+import SetContent from "../../utils/SetContent";
 
 import "./heroInfo.scss";
 
 const HeroInfo = ({ heroId }) => {
   const [hero, setHero] = useState(null);
 
-  const { loading, error, getHeroById, clearError } = useDotaService();
+  const { getHeroById, process, setProcess, clearError } = useDotaService();
 
   useEffect(() => {
     updateHero();
@@ -24,32 +22,20 @@ const HeroInfo = ({ heroId }) => {
     }
 
     clearError();
-    getHeroById(heroId).then(onHeroLoaded);
+    getHeroById(heroId)
+      .then(onHeroLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   const onHeroLoaded = (hero) => {
     setHero(hero);
   };
 
-  const isLoading = heroId ? loading : false;
-
-  const skeleton = !hero && !isLoading && !error ? <Skeleton /> : null;
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = isLoading ? <Spinner /> : null;
-  const content = !(loading || error || !hero) ? <View hero={hero} /> : null;
-
-  return (
-    <div className="hero__info">
-      {skeleton}
-      {errorMessage}
-      {spinner}
-      {content}
-    </div>
-  );
+  return <div className="hero__info">{SetContent(process, View, hero)}</div>;
 };
 
-const View = ({ hero }) => {
-  const { id, name, description, thumbnail, fandom, baseStats } = hero;
+const View = ({ data }) => {
+  const { id, name, description, thumbnail, fandom, baseStats } = data;
 
   return (
     <>

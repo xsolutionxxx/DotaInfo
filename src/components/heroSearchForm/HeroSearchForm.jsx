@@ -9,45 +9,69 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 
 import useDotaService from "../../services/DotaService";
+import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
 import "./heroSearchForm.scss";
 
-const HeroSearchForm = () => {
-  const [hero, setHero] = useState(null);
-  const { getHeroByName, error, clearError } = useDotaService();
+const SetContent = (process, Component, data) => {
+  switch (process) {
+    case "waiting":
+      return null;
+    case "loading":
+      return <Spinner widthSpin={"38px"} heightSpin={"38px"} />;
+    case "confirmed":
+      return <Component data={data} />;
+    case "error":
+      return <ErrorMessage />;
+    default:
+      throw Error("Unexpected process state");
+  }
+};
 
-  const updateHero = (heroName) => {
-    clearError();
+const Results = ({ data }) => {
+  if (!data) {
+    return null;
+  }
 
-    getHeroByName(heroName).then(onHeroLoaded);
-  };
-
-  const onHeroLoaded = (hero) => {
-    if (!hero) {
-      setHero(false);
-      return;
-    }
-
-    setHero(hero);
-  };
-
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const results =
-    hero === false ? (
+  if (data === "not_found") {
+    return (
       <div className="form__text form__text__error">
         The hero was not found. Check the name and try again
       </div>
-    ) : !hero ? null : (
-      <div className="form__wrapper">
-        <span className="form__text form__text__correct">
-          There is! Visit {hero.name} page?
-        </span>
-        <Link to={`/heroes/${hero.id}`} className="button button__secondary">
-          <div className="inner">to page</div>
-        </Link>
-      </div>
     );
+  }
+
+  return (
+    <div className="form__wrapper">
+      <span className="form__text form__text__correct">
+        There is! Visit {data.name} page?
+      </span>
+      <Link to={`/heroes/${data.id}`} className="button button__secondary">
+        <div className="inner">to page</div>
+      </Link>
+    </div>
+  );
+};
+
+const HeroSearchForm = () => {
+  const [hero, setHero] = useState(null);
+  const { getHeroByName, process, setProcess, clearError } = useDotaService();
+
+  const onHeroLoaded = (hero) => {
+    !hero ? setHero("not_found") : setHero(hero);
+  };
+
+  const updateHero = (heroName) => {
+    clearError();
+    setProcess("loading");
+
+    getHeroByName(heroName)
+      .then(onHeroLoaded)
+      .then(() => setProcess("confirmed"));
+  };
+
+  const isLoading = process === "loading";
 
   return (
     <Formik
@@ -70,7 +94,11 @@ const HeroSearchForm = () => {
             placeholder="Enter name"
             className="form__input"
           />
-          <button type="submit" className="button button__main">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="button button__main"
+          >
             <div className="inner">find</div>
           </button>
         </div>
@@ -79,8 +107,7 @@ const HeroSearchForm = () => {
           className="form__text form__text__error"
           component="span"
         />
-        {results}
-        {errorMessage}
+        {SetContent(process, Results, hero)}
       </Form>
     </Formik>
   );

@@ -7,6 +7,21 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 
 import "./heroList.scss";
 
+const SetContent = (process, Component, newHeroesLoading) => {
+  switch (process) {
+    case "waiting":
+      return <Spinner />;
+    case "loading":
+      return newHeroesLoading ? <Component /> : <Spinner />;
+    case "confirmed":
+      return <Component />;
+    case "error":
+      return <ErrorMessage />;
+    default:
+      throw Error("Unexpected process state");
+  }
+};
+
 const HeroList = ({ onHeroSelected }) => {
   const [heroes, setHeroes] = useState([]);
   const [newHeroesLoading, setNewHeroesLoading] = useState(false);
@@ -15,7 +30,7 @@ const HeroList = ({ onHeroSelected }) => {
   const [heroEnded, setHeroEnded] = useState(false);
   const [activeHeroId, setActiveHeroId] = useState(null);
 
-  const { _baseLimit, loading, error, getHeroLimit } = useDotaService();
+  const { _baseLimit, getHeroLimit, process, setProcess } = useDotaService();
 
   useEffect(() => {
     onRequest(start, limit, true);
@@ -23,7 +38,9 @@ const HeroList = ({ onHeroSelected }) => {
 
   const onRequest = (start, limit, initial) => {
     initial ? setNewHeroesLoading(false) : setNewHeroesLoading(true);
-    getHeroLimit(start, limit).then(onHeroListLoaded);
+    getHeroLimit(start, limit)
+      .then(onHeroListLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   const onHeroListLoaded = (newHeroList) => {
@@ -85,16 +102,9 @@ const HeroList = ({ onHeroSelected }) => {
     return <ul className="hero__grid">{elements}</ul>;
   };
 
-  const heroList = renderElements(heroes);
-
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading && !newHeroesLoading ? <Spinner /> : null;
-
   return (
     <div className="hero__list">
-      {errorMessage}
-      {spinner}
-      {heroList}
+      {SetContent(process, () => renderElements(heroes), newHeroesLoading)}
       <button
         className="button button__main button__long"
         style={{ display: heroEnded ? "none" : "block" }}

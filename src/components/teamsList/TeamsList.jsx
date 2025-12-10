@@ -7,8 +7,22 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 
 import "./teamsList.scss";
 
+const SetContent = (process, Component, newTeamsLoading) => {
+  switch (process) {
+    case "waiting":
+      return <Spinner />;
+    case "loading":
+      return newTeamsLoading ? <Component /> : <Spinner />;
+    case "confirmed":
+      return <Component />;
+    case "error":
+      return <ErrorMessage />;
+    default:
+      throw Error("Unexpected process state");
+  }
+};
+
 const TeamsList = () => {
-  const { _baseLimit, getTeamsByRating, loading, error } = useDotaService();
   const [teams, setTeams] = useState([]);
   const [newTeamsLoading, setNewTeamsLoading] = useState(false);
   const [start, setStart] = useState(0);
@@ -16,13 +30,18 @@ const TeamsList = () => {
   const [teamsEnded, setTeamsEnded] = useState(false);
   const rating = 1350;
 
+  const { _baseLimit, getTeamsByRating, process, setProcess } =
+    useDotaService();
+
   useEffect(() => {
     onTeamsByRating(start, limit, true);
   }, []);
 
   const onTeamsByRating = (start, limit, initial) => {
     initial ? setNewTeamsLoading(false) : setNewTeamsLoading(true);
-    getTeamsByRating(rating, start, limit).then(onTeamsListLoaded);
+    getTeamsByRating(rating, start, limit)
+      .then(onTeamsListLoaded)
+      .then(() => setProcess("confirmed"));
   };
 
   const onTeamsListLoaded = (newTeamsList) => {
@@ -60,16 +79,9 @@ const TeamsList = () => {
     return <ul className="teams__grid">{elements}</ul>;
   };
 
-  const teamsList = renderTeams(teams);
-
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading && !newTeamsLoading ? <Spinner /> : null;
-
   return (
     <div className="teams__list">
-      {errorMessage}
-      {spinner}
-      {teamsList}
+      {SetContent(process, () => renderTeams(teams), newTeamsLoading)}
       <button
         className="button button__main button__long"
         style={{ display: teamsEnded ? "none" : "block" }}
