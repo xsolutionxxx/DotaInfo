@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 import "./singleTeamLayout.scss";
 
@@ -11,6 +12,13 @@ const SingleTeamLayout = ({ data }) => {
 
   return (
     <div className="single-team">
+      <Helmet>
+        <meta
+          name="description"
+          content={`Information about team: ${name} dota 2`}
+        />
+        <title>Dota 2 {name}</title>
+      </Helmet>
       <img src={logo_url} alt={tag} className="single-team__img" />
       <div className="single-team__info">
         <h2 className="single-team__name">{name}</h2>

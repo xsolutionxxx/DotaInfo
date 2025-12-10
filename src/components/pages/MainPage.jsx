@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 import RandomHero from "../randomHero/RandomHero";
 import HeroList from "../heroList/HeroList";
@@ -17,6 +18,13 @@ const MainPage = () => {
 
   return (
     <>
+      <Helmet>
+        <meta
+          name="description"
+          content="Information about all heroes dota 2"
+        />
+        <title>Dota 2 Information Portal</title>
+      </Helmet>
       <ErrorBoundary>
         <RandomHero />
       </ErrorBoundary>
