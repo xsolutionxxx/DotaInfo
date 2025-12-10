@@ -31,11 +31,12 @@ const HeroInfo = ({ heroId }) => {
     setHero(hero);
   };
 
-  const skeleton = !hero && !error ? <Skeleton /> : null;
+  const isLoading = heroId ? loading : false;
+
+  const skeleton = !hero && !isLoading && !error ? <Skeleton /> : null;
   const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading && hero ? <Spinner /> : null;
-  const content =
-    !error && (!loading || !hero) && hero ? <View hero={hero} /> : null;
+  const spinner = isLoading ? <Spinner /> : null;
+  const content = !(loading || error || !hero) ? <View hero={hero} /> : null;
 
   return (
     <div className="hero__info">
