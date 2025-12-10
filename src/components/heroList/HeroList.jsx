@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import PropTypes from "prop-types";
 
 import useDotaService from "../../services/DotaService";
@@ -12,9 +12,9 @@ const SetContent = (process, Component, newHeroesLoading) => {
     case "waiting":
       return <Spinner />;
     case "loading":
-      return newHeroesLoading ? <Component /> : <Spinner />;
+      return newHeroesLoading ? Component : <Spinner />;
     case "confirmed":
-      return <Component />;
+      return Component;
     case "error":
       return <ErrorMessage />;
     default:
@@ -102,9 +102,13 @@ const HeroList = ({ onHeroSelected }) => {
     return <ul className="hero__grid">{elements}</ul>;
   };
 
+  const elements = useMemo(() => {
+    return SetContent(process, renderElements(heroes), newHeroesLoading);
+  }, [process, activeHeroId, heroes, newHeroesLoading]);
+
   return (
     <div className="hero__list">
-      {SetContent(process, () => renderElements(heroes), newHeroesLoading)}
+      {elements}
       <button
         className="button button__main button__long"
         style={{ display: heroEnded ? "none" : "block" }}
